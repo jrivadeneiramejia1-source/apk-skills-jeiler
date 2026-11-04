@@ -1,0 +1,13 @@
+# Prueba de Maestro: abre la app, espera su contenido, toca el botón y comprueba el contador.
+# OJO: no comprobar el nombre de la app ("Plantilla APK"): también aparece en la pantalla de
+# inicio del teléfono y la prueba pasaría aunque la app no abriera. Se usa un texto que solo
+# existe dentro de la app.
+appId: com.jeiler.pantilla
+---
+- launchApp
+- extendedWaitUntil:
+    visible: "Toques: 0"
+    timeout: 30000
+- tapOn: "Tocar aquí"
+- assertVisible: "Toques: 1"
+- takeScreenshot: despues-del-toque

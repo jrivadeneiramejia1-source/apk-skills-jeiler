@@ -5,7 +5,7 @@ Es el tercer repo de la familia: `agent-skills-jeiler` (agentes), `app-skills-je
 
 Cada carpeta de `skills/` es una skill: un archivo `SKILL.md` con instrucciones para que Claude sepa cuándo y cómo usarla.
 
-## Qué hay (36 skills)
+## Qué hay (37 skills)
 | Grupo | Para qué |
 |---|---|
 | **A. Del web al APK** | Convertir una web o PWA en app de Android y construirla en GitHub Actions. |
@@ -17,7 +17,7 @@ Cada carpeta de `skills/` es una skill: un archivo `SKILL.md` con instrucciones 
 
 La lista completa, con cuándo usar cada una y de dónde viene, está en **`INDICE-DE-SKILLS.md`**.
 
-Las 2 skills originales de este repo son **`web-a-apk`** y **`verificar-apk`** (licencia MIT, ver `LICENSE`). Las otras 34 son copias de repos con licencia libre (11 son oficiales de Google y 10 oficiales de Expo); sus licencias están en `third-party/`.
+Las 3 skills originales de este repo son **`web-a-apk`**, **`verificar-apk`** y **`pruebas-maestro`** (licencia MIT, ver `LICENSE`). Las otras 34 son copias de repos con licencia libre (11 son oficiales de Google y 10 oficiales de Expo); sus licencias están en `third-party/`.
 
 ## Cómo usarlas
 Una skill solo funciona si está en la carpeta de skills de Claude (`~/.claude/skills/`). El instalador copia por grupos:
@@ -35,6 +35,7 @@ Mejor pocos grupos a la vez: cada skill agrega su descripción al contexto y eso
 
 ## Qué falta o no está probado
 - **Ninguna skill se ha probado en una tarea real.** Solo se verificó que los archivos son válidos y que no traen comandos de riesgo.
-- `web-a-apk` no tiene un APK construido de punta a punta: los pasos de Capacitor y el esqueleto de GitHub Actions están sin probar.
+- **Probado de verdad (2026-11-04), en el repo de prueba `pantilla-apk`:** el APK se construyó en GitHub Actions (2 min 16 s) y se instaló en un emulador de Android; la primera prueba con Maestro falló por un problema del emulador (no de la app) y se corrigió. El resultado de la segunda ejecución está pendiente: ver `pruebas-maestro`.
+- **No se probó:** el camino TWA, la construcción firmada `release` ni la publicación en Play Store.
 - Las skills de Compose, React Native y Play Store son de terceros; revísalas antes de depender de ellas.
 - Revisión de seguridad hecha con gitleaks: ver `SEGURIDAD.md`. Origen y versión de cada skill: ver `FUENTES.md`.

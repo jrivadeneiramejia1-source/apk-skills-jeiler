@@ -13,4 +13,4 @@ Verificado el 2026-11-04.
 | `security-audit`, `kotlin-quality` | liuyi0808/android-review | 26fbdc8 | 2026-08-27 | MIT |
 | `android-testing`, `android-patterns` | lennonpetrick/android-engineering-skills | b1468d1 | 2026-11-03 | MIT |
 | `vercel-react-native-skills` | vercel-labs/agent-skills (tu fork `agent-skills-jeiler`) | 063bee9 | 2026-08-28 | MIT (declarada en su SKILL.md) |
-| `web-a-apk`, `verificar-apk` | Originales de este repo | — | — | MIT (ver LICENSE) |
+| `web-a-apk`, `verificar-apk`, `pruebas-maestro` | Originales de este repo | — | — | MIT (ver LICENSE) |

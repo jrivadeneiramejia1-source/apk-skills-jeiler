@@ -3,13 +3,14 @@
 ## A. Del web al APK
 | Skill | Cuándo usarla | Origen |
 |---|---|---|
-| **web-a-apk** | Convertir una web o PWA en app de Android: elegir camino, construir con GitHub Actions, firmar. | Original |
+| **web-a-apk** | Convertir una web o PWA en app de Android con Capacitor y construir el APK en GitHub Actions (probado); firmar y publicar. | Original |
 | github-actions | Flujos de GitHub Actions para compilar apps móviles (React Native) en la nube. | Callstack (MIT) |
 
 ## B. Probar y verificar
 | Skill | Cuándo usarla | Origen |
 |---|---|---|
 | **verificar-apk** | Hay un APK o AAB listo: instalarlo, intentar romperlo y dar un informe. | Original |
+| **pruebas-maestro** | Probar el APK solo, en un emulador dentro de GitHub Actions, con Maestro. Trae una plantilla probada. | Original |
 | testing-setup | Armar la estrategia de pruebas de una app de Android: librerías, pruebas unitarias y de interfaz. | Google (Apache-2.0) |
 | android-testing | Estándares de pruebas para una app de Android nativa. | lennonpetrick (MIT) |
 | security-audit | Auditoría de seguridad de Android basada en OWASP MASVS. | liuyi0808 (MIT) |
