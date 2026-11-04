@@ -63,10 +63,13 @@ Origen: expo/skills (MIT). Empezar por `expo-overview`: enruta a las demás.
 | eas-update | Actualizaciones por el aire (OTA). |
 | expo-upgrade | Subir de versión del SDK de Expo. |
 
+**Plan gratuito de EAS** (búsqueda del 2026-11-04, sin abrir la página oficial): 15 compilaciones de Android y 15 de iOS al mes, cola de baja prioridad y 60 minutos de CI/CD. Confirmar en expo.dev/pricing antes de depender de él.
+
 ## Plugins recomendados (se instalan desde el directorio de plugins, no desde este repo)
 `kotlin-lsp` (oficial de Anthropic, revisa Kotlin) y `Pwa2play` (de la comunidad, empaqueta una PWA para Play Store).
 
 ## Revisadas y NO incluidas
+- Firebase Test Lab (pruebas en teléfonos reales desde la nube): no se incluyó. Según la búsqueda del 2026-11-04, Google lo da por obsoleto y lo cerrará el 2027-09-30; su cuota gratis era 10 pruebas en virtuales y 5 en físicos por día.
 - `android-cli` (Google): su instalación ejecuta un script descargado (`curl ... | bash`). Instalarlo a mano desde la página oficial si se necesita.
 - `play-store` (liuyi0808): hecha para apps financieras. Se reemplazó por la oficial `play-policy-insights`.
 - `privacy-audit` (liuyi0808): hecha para apps de préstamos.

@@ -46,7 +46,7 @@ La plantilla está en `plantilla/` dentro de esta skill (un flujo de Actions y u
 - **Falso positivo:** la primera prueba pasó el paso «ver "Plantilla APK"» porque ese texto era el icono en la pantalla de inicio. La app ya estaba cerrada.
 - **Tiempos:** el emulador arrancó en 59 segundos con aceleración (KVM); instalar el SDK y la imagen en el servidor de GitHub tardó unos 55 segundos más.
 - **Cola:** en un repo privado, GitHub puede tardar varios minutos en asignar un servidor.
-- **Costo:** el flujo completo usa varios minutos del servidor. En un repo privado esos minutos cuentan para el límite gratuito mensual del dueño; verificar el límite vigente.
+- **Costo:** el flujo completo usa varios minutos del servidor. En un repo privado esos minutos cuentan para el límite gratuito mensual del dueño. Según la documentación de GitHub (búsqueda del 2026-11-04), el plan Free incluye **US$12 de uso por mes** (unos 2.000 minutos de servidor Linux estándar, a US$0,006 el minuto; ese cálculo es mío); en repos públicos es gratis. Un flujo completo de este tipo (unos 8 a 9 minutos) alcanza para unas 200 ejecuciones al mes.
 
 ## Señales de alerta
 - Una prueba que «pasa» sin que la app esté en pantalla.
