@@ -52,7 +52,7 @@ La firma se hace con secretos de GitHub, nunca con archivos dentro del repo.
 ## Paso 5: firmar y publicar
 - **Para probar:** el APK `debug` se instala en el teléfono activando «instalar apps de origen desconocido».
 - **Para publicar en Play Store:** Google pide un paquete AAB firmado. Conviene activar «Play App Signing», para que Google guarde la clave de la app. Perder el keystore sin eso significa no poder actualizar la app.
-- Usar la skill `play-store` (lista de requisitos y políticas) antes de subir.
+- Usar la skill `play-policy-insights` (revisión de las políticas de Google Play) antes de subir.
 
 ## Paso 6: probar en el teléfono
 Instalar el APK y pasar la skill `verificar-apk`.

@@ -29,7 +29,7 @@ Objetivo: encontrar los fallos antes que el usuario. Nada se da por bueno sin ev
    - negar un permiso: la app debe seguir funcionando y explicar qué falta.
 5. **Seguridad y privacidad.** Usar la skill `security-audit`. Para privacidad, listar qué datos recoge la app y comprobar que exista una política de privacidad y que los textos de la app digan lo mismo que hace el código. Buscar claves o tokens dentro del APK (descomprimirlo y buscar texto como `api_key`, `secret`, `token`, `AIza`), comprobar que la versión `release` no sea depurable (`debuggable`), que el tráfico sea HTTPS y que los permisos pedidos sean solo los necesarios.
 6. **Calidad.** `android-testing` y `kotlin-quality` si hay código nativo; `react-native-best-practices` si usa React Native; `compose-ui` si usa Compose.
-7. **Antes de publicar.** Pasar la lista de `play-store`.
+7. **Antes de publicar.** Pasar la skill `play-policy-insights` (revisión de las políticas de Google Play).
 8. **Informe.** Tabla: **Probado y bien**, **Falló**, **No se pudo probar (y por qué)**. Cada fallo con pasos para repetirlo, gravedad (alta, media, baja) y arreglo sugerido.
 
 ## Señales de alerta

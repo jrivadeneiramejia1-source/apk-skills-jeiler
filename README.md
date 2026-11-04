@@ -5,17 +5,19 @@ Es el tercer repo de la familia: `agent-skills-jeiler` (agentes), `app-skills-je
 
 Cada carpeta de `skills/` es una skill: un archivo `SKILL.md` con instrucciones para que Claude sepa cuándo y cómo usarla.
 
-## Qué hay (15 skills)
+## Qué hay (36 skills)
 | Grupo | Para qué |
 |---|---|
 | **A. Del web al APK** | Convertir una web o PWA en app de Android y construirla en GitHub Actions. |
-| **B. Probar y verificar** | Probar un APK, revisar seguridad y requisitos de Google Play. |
+| **B. Probar y verificar** | Probar un APK, revisar seguridad, permisos y políticas de Google Play. |
 | **C. Jetpack Compose** | Apps nativas en Kotlin. |
-| **D. React Native y Expo** | Apps con React Native. |
+| **D. Android, extras** | Cámara, bloqueos de la app y reglas de R8. |
+| **E. React Native** | Apps con React Native. |
+| **F. Expo** | Skills oficiales de Expo y EAS. |
 
 La lista completa, con cuándo usar cada una y de dónde viene, está en **`INDICE-DE-SKILLS.md`**.
 
-Las 2 skills originales de este repo son **`web-a-apk`** y **`verificar-apk`** (licencia MIT, ver `LICENSE`). Las otras 13 son copias de repos con licencia libre; sus licencias están en `third-party/`.
+Las 2 skills originales de este repo son **`web-a-apk`** y **`verificar-apk`** (licencia MIT, ver `LICENSE`). Las otras 34 son copias de repos con licencia libre (11 son oficiales de Google y 10 oficiales de Expo); sus licencias están en `third-party/`.
 
 ## Cómo usarlas
 Una skill solo funciona si está en la carpeta de skills de Claude (`~/.claude/skills/`). El instalador copia por grupos:
