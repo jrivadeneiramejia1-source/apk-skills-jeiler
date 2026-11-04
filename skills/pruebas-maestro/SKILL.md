@@ -36,10 +36,10 @@ La plantilla está en `plantilla/` dentro de esta skill (un flujo de Actions y u
 5. **Leer el resultado en la pestaña Actions.** Si falla, bajar el artefacto `informe-maestro`: trae `commands.json` (qué hizo Maestro y qué paso falló), `screenshots/` (la pantalla en el fallo), `screen-hierarchy/` (los elementos que Maestro veía) y `device-logcat.txt` (el registro del teléfono).
 6. **Informe corto:** qué flujos pasaron, qué falló y por qué, y qué quedó sin probar.
 
-## Qué se probó (2026-11-04, estado provisional)
-- **Funcionó:** instalar Maestro 2.12.1 con la comprobación de la huella, activar KVM, arrancar un emulador de Android 14 en 59 segundos, instalar el APK (`Success`) y correr el flujo.
-- **Falló (primera ejecución):** el flujo no pudo tocar el botón porque la app se cerró (ver abajo). Se corrigió la imagen del emulador y el flujo.
-- **Pendiente de confirmar:** que la versión corregida de la plantilla (la de esta carpeta) pase de punta a punta. Este archivo se actualiza con el resultado.
+## Qué se probó (2026-11-04, repo de prueba `pantilla-apk`, repo privado)
+- **Pasó de punta a punta** con la plantilla de esta carpeta: se construyó el APK, se instaló en un emulador de Android 14 y Maestro corrió 7 pasos, todos `COMPLETED`: abrir la app, esperar «Toques: 0», tocar «Tocar aquí» y comprobar «Toques: 1». La captura del informe muestra la app en pantalla con el contador en 1.
+- **Primera ejecución (falló):** la imagen `google_apis` hizo que los Play Services se bloquearan y Android cerrara la app; además la prueba pasaba por error al comprobar el nombre de la app. Se corrigió (ver abajo).
+- **No se probó:** un teléfono real, Bluetooth, cámara, notificaciones ni apps con inicio de sesión.
 
 ## Lo aprendido al probarla
 - **Emulador:** con la imagen «google_apis», un bloqueo de los Google Play Services (ANR) hizo que Android **matara la app** mientras se probaba. Usar la imagen `target: default` (sin Play Services).

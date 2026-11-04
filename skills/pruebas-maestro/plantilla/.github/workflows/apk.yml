@@ -5,7 +5,10 @@ name: APK
 on:
   push:
     branches: [main, 'claude/**']
+    # No gastar minutos cuando solo cambian documentos o la segunda app.
+    paths-ignore: ['**.md', 'proyectos/**', '.github/workflows/apk-asesor-prompts.yml']
   pull_request:
+    paths-ignore: ['**.md', 'proyectos/**', '.github/workflows/apk-asesor-prompts.yml']
   workflow_dispatch:
 
 permissions:
