@@ -1,0 +1,85 @@
+# Construye el release de Android (APK y AAB) y lo firma con TU llave, guardada en los Secrets del repositorio.
+# Secrets que hay que crear (Settings > Secrets and variables > Actions):
+#   KEYSTORE_B64      el archivo .jks en base64 (en tu computador: base64 -w0 mi-llave.jks)
+#   KEYSTORE_PASSWORD la contraseña del keystore (se usa también para la llave)
+#   KEY_ALIAS         el alias de la llave
+# Se corre a mano (Run workflow). Los pasos de firma se probaron con una llave de prueba creada al vuelo;
+# la lectura desde Secrets reales no se ha probado todavía.
+name: Firmar release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firmar-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  firmar:
+    name: Construir y firmar APK y AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npx cap sync android
+      - name: Aceptar las licencias del SDK de Android
+        run: |
+          if [ -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
+          fi
+      - name: Leer la llave desde los Secrets
+        env:
+          S_B64: ${{ secrets.KEYSTORE_B64 }}
+          S_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+          S_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          for v in S_B64 S_PASS S_ALIAS; do
+            if [ -z "${!v}" ]; then echo "Falta el Secret correspondiente a $v (KEYSTORE_B64, KEYSTORE_PASSWORD o KEY_ALIAS)."; exit 1; fi
+          done
+          echo "::add-mask::$S_PASS"
+          { echo "KS_B64=$S_B64"; echo "KS_PASS=$S_PASS"; echo "KS_ALIAS=$S_ALIAS"; } >> "$GITHUB_ENV"
+      - name: Construir release (sin firmar)
+        working-directory: android
+        run: ./gradlew assembleRelease bundleRelease --no-daemon
+      - name: Firmar y verificar el APK
+        run: |
+          set -euo pipefail
+          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/ks.jks"
+          bt=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          echo "build-tools: $bt"
+          apk=$(ls android/app/build/outputs/apk/release/*.apk)
+          echo "APK sin firmar: $apk"
+          "$bt/zipalign" -p -f 4 "$apk" "$RUNNER_TEMP/alineado.apk"
+          "$bt/apksigner" sign --ks "$RUNNER_TEMP/ks.jks" --ks-pass env:KS_PASS --key-pass env:KS_PASS --out app-release.apk "$RUNNER_TEMP/alineado.apk"
+          "$bt/apksigner" verify --verbose --print-certs app-release.apk
+          echo "--- el APK sin firmar NO debe verificar:"
+          if "$bt/apksigner" verify "$apk" 2>&1; then echo "ERROR: el sin firmar verificó"; exit 1; else echo "bien: el sin firmar fue rechazado"; fi
+      - name: Firmar y verificar el AAB
+        run: |
+          set -euo pipefail
+          aab=$(ls android/app/build/outputs/bundle/release/*.aab)
+          cp "$aab" app-release.aab
+          jarsigner -keystore "$RUNNER_TEMP/ks.jks" -storepass:env KS_PASS -keypass:env KS_PASS -sigalg SHA256withRSA -digestalg SHA-256 app-release.aab "$KS_ALIAS" > /dev/null
+          jarsigner -verify -certs app-release.aab | head -5
+          jarsigner -verify app-release.aab | grep -q "jar verified"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-firmado
+          path: |
+            app-release.apk
+            app-release.aab
+          retention-days: 7
+          if-no-files-found: error

@@ -60,7 +60,8 @@ Antes de usar versiones de las acciones (`@v7`, etc.), comprobar que existan; la
 - **Para publicar en Play Store:** Google pide un paquete AAB firmado (`./gradlew bundleRelease`). Conviene activar «Play App Signing», para que Google guarde la clave de la app. Perder el keystore sin eso significa no poder actualizar la app.
 - El keystore se crea con `keytool` en el computador o servidor **del usuario**; su contraseña y el archivo (en base64) van a los Secrets de GitHub, nunca al repositorio.
 - Usar la skill `play-policy-insights` (revisión de las políticas de Google Play) antes de subir.
-- **No se probó** la construcción firmada `release`.
+- **Plantilla `plantilla/firmar-release.yml`:** construye el release, firma el APK (`zipalign` y `apksigner`) y el AAB (`jarsigner`) y los verifica. La llave sale de tres Secrets del repositorio (`KEYSTORE_B64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`); se corre a mano con «Run workflow».
+- **Probado el 2026-11-04 en GitHub Actions** (repo `pantilla-apk`, construcción de 3 min 4 s): `assembleRelease` y `bundleRelease` salieron bien; el APK firmado verificó con los esquemas v2 y v3 (1 firmante); el APK sin firmar fue rechazado como debía; el AAB firmado verificó. La prueba usó una **llave de prueba creada en la misma ejecución** y pasada en base64 como pasaría un Secret. **No se probó** leerla desde Secrets reales, instalar el APK firmado en un emulador, ni subir el AAB a Play Store.
 
 ## Paso 6: probar
 1. Automáticamente, en un emulador: skill `pruebas-maestro`.

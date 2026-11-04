@@ -36,6 +36,7 @@ Mejor pocos grupos a la vez: cada skill agrega su descripción al contexto y eso
 ## Qué falta o no está probado
 - Solo se verificó que los archivos son válidos y que no traen comandos de riesgo, salvo lo de abajo. Se abrieron solas al pedirlo: `verificar-apk` en 3 de 3 frases y `web-a-apk` en 2 de 3 (con Haiku; pocas repeticiones, solo una señal).
 - **Probado de verdad (2026-11-04), en el repo de prueba `pantilla-apk`:** el APK se construyó en GitHub Actions y se probó en un emulador de Android 14 con Maestro: abrió la app, tocó el botón y comprobó el contador (pasó de punta a punta). La primera ejecución falló por un problema del emulador y se corrigió; ver `pruebas-maestro`.
-- **No se probó:** el camino TWA, la construcción firmada `release` ni la publicación en Play Store.
+- **Construcción firmada (`release`), probada el 2026-11-04 en GitHub Actions** con una llave de prueba: APK (v2 y v3) y AAB firmados y verificados; ver `web-a-apk`. Con tus Secrets reales no se ha probado.
+- **No se probó:** el camino TWA ni la publicación en Play Store.
 - Las skills de Compose, React Native y Play Store son de terceros; revísalas antes de depender de ellas.
 - Revisión de seguridad hecha con gitleaks: ver `SEGURIDAD.md`. Origen y versión de cada skill: ver `FUENTES.md`.
