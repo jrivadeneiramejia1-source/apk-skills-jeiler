@@ -1,0 +1,46 @@
+---
+name: verificar-apk
+description: Verifica una app de Android (APK o AAB) antes de entregarla o publicarla. Revisa instalación, permisos, botón Atrás, rotación, pantallas pequeñas, modo oscuro, sin conexión, tamaño, seguridad y privacidad, e intenta romperla. Usar cuando haya un APK listo, cuando el usuario diga "prueba el APK", "revisa la app de Android", "verifica que no falle en el teléfono" o antes de subir a Play Store.
+---
+
+# Verificar una app de Android
+
+Objetivo: encontrar los fallos antes que el usuario. Nada se da por bueno sin evidencia (comando corrido, captura, mensaje real).
+
+## Reglas
+- Probar solo apps del usuario, en un emulador o en su teléfono. No tocar datos reales sin avisar.
+- No pedir ni guardar claves ni contraseñas. Si aparece una clave dentro del APK, avisar sin copiarla.
+- Primero el informe; los arreglos se hacen después, con permiso, uno por vez.
+- Decir qué NO se pudo probar (por ejemplo: teléfono real, Bluetooth, sensores, llamadas).
+- La parte web de la app se prueba también con `verificar-app`.
+
+## Proceso
+1. **Identificar el archivo.** APK o AAB, `debug` o `release`, versión, tamaño. Si hay herramientas de Android disponibles (`aapt`, `apksigner`), leer el nombre del paquete, la versión y los permisos declarados; si no, decirlo.
+2. **Instalar y abrir.** Primer arranque sin datos guardados. ¿Abre rápido? ¿Se cierra solo? ¿Pide permisos al abrir o solo cuando los necesita, con un texto claro?
+3. **Recorrer los 3 flujos principales** con capturas.
+4. **Intentar romperla:**
+   - botón Atrás en cada pantalla (¿sale de la app sin querer? ¿pierde lo escrito?);
+   - rotar la pantalla en medio de un formulario;
+   - pantalla pequeña y letra grande del sistema;
+   - modo oscuro;
+   - sin conexión y con conexión lenta;
+   - mandarla a segundo plano, volver, y cerrarla y abrirla de nuevo;
+   - tocar rápido varias veces;
+   - negar un permiso: la app debe seguir funcionando y explicar qué falta.
+5. **Seguridad y privacidad.** Usar la skill `security-audit`. Para privacidad, listar qué datos recoge la app y comprobar que exista una política de privacidad y que los textos de la app digan lo mismo que hace el código. Buscar claves o tokens dentro del APK (descomprimirlo y buscar texto como `api_key`, `secret`, `token`, `AIza`), comprobar que la versión `release` no sea depurable (`debuggable`), que el tráfico sea HTTPS y que los permisos pedidos sean solo los necesarios.
+6. **Calidad.** `android-testing` y `kotlin-quality` si hay código nativo; `react-native-best-practices` si usa React Native; `compose-ui` si usa Compose.
+7. **Antes de publicar.** Pasar la lista de `play-store`.
+8. **Informe.** Tabla: **Probado y bien**, **Falló**, **No se pudo probar (y por qué)**. Cada fallo con pasos para repetirlo, gravedad (alta, media, baja) y arreglo sugerido.
+
+## Señales de alerta
+- «En el emulador funciona» sin haberlo probado en un teléfono real.
+- Un permiso peligroso (ubicación, cámara, contactos) que la app no usa.
+- Una clave dentro del APK.
+- Una app `release` instalada que todavía muestra mensajes de depuración.
+
+## Verificación final
+- [ ] Se instaló y abrió el archivo.
+- [ ] Se recorrieron los flujos principales.
+- [ ] Se intentó romperla con Atrás, rotación, sin conexión y permisos negados.
+- [ ] Se revisó seguridad y privacidad.
+- [ ] El informe dice qué quedó sin probar.
