@@ -34,7 +34,7 @@ El instalador no pisa una skill que ya exista con el mismo nombre y que no haya 
 Mejor pocos grupos a la vez: cada skill agrega su descripción al contexto y eso gasta tokens.
 
 ## Qué falta o no está probado
-- **Ninguna skill se ha probado en una tarea real.** Solo se verificó que los archivos son válidos y que no traen comandos de riesgo.
+- Solo se verificó que los archivos son válidos y que no traen comandos de riesgo, salvo lo de abajo. Se abrieron solas al pedirlo: `verificar-apk` en 3 de 3 frases y `web-a-apk` en 2 de 3 (con Haiku; pocas repeticiones, solo una señal).
 - **Probado de verdad (2026-11-04), en el repo de prueba `pantilla-apk`:** el APK se construyó en GitHub Actions y se probó en un emulador de Android 14 con Maestro: abrió la app, tocó el botón y comprobó el contador (pasó de punta a punta). La primera ejecución falló por un problema del emulador y se corrigió; ver `pruebas-maestro`.
 - **No se probó:** el camino TWA, la construcción firmada `release` ni la publicación en Play Store.
 - Las skills de Compose, React Native y Play Store son de terceros; revísalas antes de depender de ellas.
