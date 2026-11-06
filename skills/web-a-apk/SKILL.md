@@ -55,6 +55,12 @@ El APK se construye en GitHub Actions y se baja como «artefacto». Hay un flujo
 En la prueba, la construcción tardó **2 minutos y 16 segundos**. Para el servidor de GitHub que pide el repo privado puede haber cola de varios minutos.
 Antes de usar versiones de las acciones (`@v7`, etc.), comprobar que existan; las del flujo se verificaron el 2026-11-04.
 
+### Antes de gastar minutos, y para que sea más rápido
+- **Revisar antes de construir:** `python -I skills\verificar-apk\scripts\revisar_android.py .` (en la raíz del proyecto). Avisa `targetSdk` bajo, `server.url`, `debuggable`, contraseñas escritas, llaves sin ignorar y fallos del flujo. Es gratis y tarda un segundo.
+- **Google Play exige `targetSdk` 36 o más** para apps nuevas y actualizaciones desde el 2026-08-31 **[F]** (developer.android.com/google/play/requirements/target-sdk). Capacitor 8.6 ya trae 36.
+- **Caché de Gradle [F]:** poner `gradle/actions/setup-gradle` después de `setup-java` y antes de `./gradlew`. Por defecto usa un proveedor «enhanced» que es una biblioteca comercial (gratis para repos públicos, en vista previa para privados); **para quedarte solo con código abierto usa `cache-provider: basic`** (MIT). Según su documentación solo escribe caché desde la rama por defecto (`main`): en ramas de prueba lee pero no guarda. **No se probó aquí**: no gasté minutos de Actions; mide el antes y el después en tu repo.
+- Poner `permissions: contents: read` y `timeout-minutes` en el flujo **[F]** (docs.github.com, «Secure use reference»).
+
 ## Paso 5: firmar y publicar
 - **Para probar:** el APK `debug` se instala en el teléfono activando «instalar apps de origen desconocido».
 - **Para publicar en Play Store:** Google pide un paquete AAB firmado (`./gradlew bundleRelease`). Conviene activar «Play App Signing», para que Google guarde la clave de la app. Perder el keystore sin eso significa no poder actualizar la app.

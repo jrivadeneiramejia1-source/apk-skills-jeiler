@@ -1,0 +1,23 @@
+apply plugin: 'com.android.application'
+
+android {
+    defaultConfig {
+        applicationId "com.ejemplo.malo"
+        targetSdkVersion 33
+        versionCode 1
+    }
+    signingConfigs {
+        release {
+            storeFile file("release.jks")
+            storePassword "contrasena-inventada-123"
+            keyPassword "contrasena-inventada-123"
+        }
+    }
+    buildTypes {
+        release {
+            debuggable true
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+    }
+}

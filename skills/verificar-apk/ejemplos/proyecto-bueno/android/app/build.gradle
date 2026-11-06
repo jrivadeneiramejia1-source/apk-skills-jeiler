@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace = "com.ejemplo.bueno"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.ejemplo.bueno"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+    signingConfigs {
+        release {
+            // Las llaves vienen de variables de entorno que pone el CI desde los Secrets.
+            storeFile file(System.getenv("KEYSTORE_PATH") ?: "no-existe.jks")
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.release
+        }
+    }
+}

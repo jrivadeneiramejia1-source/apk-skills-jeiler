@@ -16,3 +16,9 @@ Hecha el 2026-11-04.
   - `eas-workflows/scripts/fetch.js` (Expo): descarga documentación y la guarda en caché.
 - **Scripts que leen archivos locales:** `r8-analyzer` (necesita Python y `protobuf`) y `expo-ui/scripts/list-components.js`.
 - **Quitado a propósito:** `android-cli` (su instalación ejecuta `curl ... | bash`).
+
+## Fase 2 (2026-11-06)
+- Se agregó `verificar-apk/scripts/revisar_android.py` (original, solo Python estándar): lee archivos, no construye, no abre redes, no ejecuta nada del proyecto revisado y no imprime valores de claves. Sin código de terceros nuevo.
+- **gitleaks 8.30.0** (descargado del sitio oficial, checksum `OK`) sobre los archivos: el mismo único hallazgo de antes (`security-audit/references/storage.md`, ejemplo ficticio). Los ejemplos malos usan contraseñas y llaves inventadas a propósito, y no disparan nada.
+- Los ejemplos malos traen un archivo `release.jks` que es solo texto de relleno, no una llave.
+- Se agregó `CLAUDE.md` con las reglas de Jeiler.
