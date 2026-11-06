@@ -22,3 +22,8 @@ Hecha el 2026-11-04.
 - **gitleaks 8.30.0** (descargado del sitio oficial, checksum `OK`) sobre los archivos: el mismo único hallazgo de antes (`security-audit/references/storage.md`, ejemplo ficticio). Los ejemplos malos usan contraseñas y llaves inventadas a propósito, y no disparan nada.
 - Los ejemplos malos traen un archivo `release.jks` que es solo texto de relleno, no una llave.
 - Se agregó `CLAUDE.md` con las reglas de Jeiler.
+
+## Fase 3 (2026-11-06, segunda ronda)
+- Herramientas de terceros usadas **sin copiarlas**: Apktool 3.0.3 (Apache-2.0; archivo `.jar` de la página oficial, su SHA-256 calculado y anotado en `skills/verificar-apk/references/herramientas.md`, porque el proyecto no publica uno), actionlint 1.7.12 (MIT, huella verificada contra la lista oficial), zizmor 1.32.0 (MIT, `--offline`) y REA 6.5.0 (MIT, construido en una copia temporal). Se corrieron en un entorno aparte, sin claves y sobre archivos propios (el APK es de la plantilla del usuario).
+- **gitleaks sobre el historial completo** (13 commits): 2 hallazgos, ambos ficticios.
+- Nuevos flujos `pruebas.yml` y `revisar-flujos.yml`: permisos de solo lectura, sin secretos, `actions/checkout` fijado a commit y `persist-credentials: false`.

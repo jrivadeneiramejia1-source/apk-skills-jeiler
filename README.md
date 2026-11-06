@@ -39,6 +39,9 @@ python -I skills\verificar-apk\scripts\revisar_android.py CARPETA-DEL-PROYECTO
 ```
 Solo Python (corre igual en Windows y en la nube). Lee el proyecto y avisa errores **antes** de gastar minutos de GitHub Actions: `targetSdk` menor que el que Google Play exige, `debuggable`, `exported` que falta, permisos restringidos, contraseñas o llaves de firma expuestas, `server.url` de Capacitor y fallos comunes de los flujos. Salida 0 = sin graves, 1 = hay graves. Probado con un proyecto bueno, uno malo hecho a propósito y 3 proyectos reales (ver `PRUEBAS.md`). Que salga limpio **no** prueba que la app sea segura ni que Google Play la acepte.
 
+### También sirve sobre un APK ya construido
+`apktool d MI-APP.apk -o SALIDA` y luego `python -I skills\verificar-apk\scripts\revisar_android.py SALIDA` revisa el manifiesto **final** (con lo que agregan las librerías). Alternativa pasiva con REA. Y `skills/verificar-apk/plantilla/revisar-flujos.yml` revisa tus flujos de GitHub Actions con `actionlint` y `zizmor` (herramientas abiertas). Versiones, licencias y mediciones: `skills/verificar-apk/references/herramientas.md`.
+
 ## Probar este repo
 ```
 python -I -m unittest discover -s tests

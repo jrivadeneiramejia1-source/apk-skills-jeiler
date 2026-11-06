@@ -9,7 +9,7 @@
 ## B. Probar y verificar
 | Skill | Cuándo usarla | Origen |
 |---|---|---|
-| **verificar-apk** | Hay un proyecto o un APK/AAB: revisar el proyecto con un script antes de construir, y después instalarlo, intentar romperlo y dar un informe. Trae `revisar_android.py`. | Original |
+| **verificar-apk** | Hay un proyecto o un APK/AAB: revisar el proyecto con un script antes de construir, y después instalarlo, intentar romperlo y dar un informe. Trae `revisar_android.py` (proyecto y APK decodificado) y una plantilla que revisa los flujos de Actions con actionlint y zizmor. | Original |
 | **pruebas-maestro** | Probar el APK solo, en un emulador dentro de GitHub Actions, con Maestro. Trae una plantilla probada. | Original |
 | testing-setup | Armar la estrategia de pruebas de una app de Android: librerías, pruebas unitarias y de interfaz. | Google (Apache-2.0) |
 | android-testing | Estándares de pruebas para una app de Android nativa. | lennonpetrick (MIT) |

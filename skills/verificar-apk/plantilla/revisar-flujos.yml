@@ -1,0 +1,45 @@
+# Plantilla de la skill verificar-apk: revisa los flujos de GitHub Actions con dos herramientas abiertas (MIT).
+#   actionlint (rhysd/actionlint): errores de escritura, versiones de acciones, texto de otras personas dentro de comandos.
+#   zizmor (zizmorcore/zizmor): seguridad (disparadores peligrosos, inyección, permisos de más, acciones sin fijar).
+# Copiar a .github/workflows/revisar-flujos.yml. Solo lee archivos; no usa secretos.
+# Versiones y huellas verificadas el 2026-11-06. Para actualizar: cambiar la versión, bajar la nueva lista de huellas
+# oficial (actionlint_X_checksums.txt) y copiar la de linux_amd64.
+name: Revisar flujos
+
+on:
+  pull_request:
+    paths: ['.github/workflows/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: revisar-flujos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  revisar:
+    name: Revisar flujos con actionlint y zizmor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ACTIONLINT_VERSION: "1.7.12"
+      ACTIONLINT_SHA256: "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+      ZIZMOR_VERSION: "1.32.0"
+    steps:
+      # actions/checkout v7.0.1 (commit fijo, como pide zizmor)
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: actionlint
+        run: |
+          curl -sSfL -o actionlint.tgz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          echo "${ACTIONLINT_SHA256}  actionlint.tgz" | sha256sum -c -
+          tar -xzf actionlint.tgz actionlint
+          ./actionlint -color
+      - name: zizmor (sin red)
+        run: |
+          python3 -m venv "$RUNNER_TEMP/zizmor"
+          "$RUNNER_TEMP/zizmor/bin/pip" install -q "zizmor==${ZIZMOR_VERSION}"
+          "$RUNNER_TEMP/zizmor/bin/zizmor" --offline --no-progress .github/workflows
