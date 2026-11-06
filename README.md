@@ -33,6 +33,17 @@ El instalador no pisa una skill que ya exista con el mismo nombre y que no haya 
 
 Mejor pocos grupos a la vez: cada skill agrega su descripción al contexto y eso gasta tokens.
 
+## Revisor automático antes de construir
+```
+python -I skills\verificar-apk\scripts\revisar_android.py CARPETA-DEL-PROYECTO
+```
+Solo Python (corre igual en Windows y en la nube). Lee el proyecto y avisa errores **antes** de gastar minutos de GitHub Actions: `targetSdk` menor que el que Google Play exige, `debuggable`, `exported` que falta, permisos restringidos, contraseñas o llaves de firma expuestas, `server.url` de Capacitor y fallos comunes de los flujos. Salida 0 = sin graves, 1 = hay graves. Probado con un proyecto bueno, uno malo hecho a propósito y 3 proyectos reales (ver `PRUEBAS.md`). Que salga limpio **no** prueba que la app sea segura ni que Google Play la acepte.
+
+## Probar este repo
+```
+python -I -m unittest discover -s tests
+```
+
 ## Qué falta o no está probado
 - Solo se verificó que los archivos son válidos y que no traen comandos de riesgo, salvo lo de abajo. Se abrieron solas al pedirlo: `verificar-apk` en 3 de 3 frases y `web-a-apk` en 2 de 3 (con Haiku; pocas repeticiones, solo una señal).
 - **Probado de verdad (2026-11-04), en el repo de prueba `pantilla-apk`:** el APK se construyó en GitHub Actions y se probó en un emulador de Android 14 con Maestro: abrió la app, tocó el botón y comprobó el contador (pasó de punta a punta). La primera ejecución falló por un problema del emulador y se corrigió; ver `pruebas-maestro`.

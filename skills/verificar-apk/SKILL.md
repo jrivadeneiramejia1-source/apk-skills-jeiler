@@ -14,6 +14,14 @@ Objetivo: encontrar los fallos antes que el usuario. Nada se da por bueno sin ev
 - Decir qué NO se pudo probar (por ejemplo: teléfono real, Bluetooth, sensores, llamadas).
 - La parte web de la app se prueba también con `verificar-app`.
 
+## Paso 0: revisar el proyecto ANTES de construir (automático)
+Si el proyecto está en una carpeta (Capacitor, Compose, React Native…), correr el revisor. Es solo Python, no construye nada, no abre redes y no muestra claves:
+```
+python -I skills\verificar-apk\scripts\revisar_android.py CARPETA-DEL-PROYECTO
+```
+Salida 0 = sin hallazgos graves; 1 = hay ALTA; 2 = no encontró un proyecto. Avisa: `debuggable`, `exported` que falta, provider exportado, tráfico http, permisos que Google Play restringe, `targetSdk` menor que el que Play exige (36 desde 2026-08-31), contraseñas de firma escritas, llaves `.jks` sin ignorar, claves escritas, `server.url` de Capacitor, y fallos comunes en los flujos de GitHub Actions (acciones sin versión, `echo` de secretos, inyección por títulos de PR, sin permisos mínimos ni caché de Gradle).
+Arreglar las ALTA antes de gastar minutos de Actions. Cada regla y su fuente: `references/reglas.md`. Ejemplos bueno y malo: `ejemplos/`. **No reemplaza** probar el APK ya construido (pasos siguientes).
+
 ## Proceso
 1. **Identificar el archivo.** APK o AAB, `debug` o `release`, versión, tamaño. Si hay herramientas de Android disponibles (`aapt`, `apksigner`), leer el nombre del paquete, la versión y los permisos declarados; si no, decirlo.
 2. **Instalar y abrir.** Primer arranque sin datos guardados. ¿Abre rápido? ¿Se cierra solo? ¿Pide permisos al abrir o solo cuando los necesita, con un texto claro?
