@@ -59,6 +59,7 @@ Antes de usar versiones de las acciones (`@v7`, etc.), comprobar que existan; la
 - **Revisar antes de construir:** `python -I skills\verificar-apk\scripts\revisar_android.py .` (en la raíz del proyecto). Avisa `targetSdk` bajo, `server.url`, `debuggable`, contraseñas escritas, llaves sin ignorar y fallos del flujo. Es gratis y tarda un segundo.
 - **Google Play exige `targetSdk` 36 o más** para apps nuevas y actualizaciones desde el 2026-08-31 **[F]** (developer.android.com/google/play/requirements/target-sdk). Capacitor 8.6 ya trae 36.
 - **Caché de Gradle [F]:** poner `gradle/actions/setup-gradle` después de `setup-java` y antes de `./gradlew`. Por defecto usa un proveedor «enhanced» que es una biblioteca comercial (gratis para repos públicos, en vista previa para privados); **para quedarte solo con código abierto usa `cache-provider: basic`** (MIT). Según su documentación solo escribe caché desde la rama por defecto (`main`): en ramas de prueba lee pero no guarda. **No se probó aquí**: no gasté minutos de Actions; mide el antes y el después en tu repo.
+- **Fijar cada acción a su commit** (`uses: actions/checkout@<40 letras> # v7`) y poner `persist-credentials: false` en `checkout`: es lo que recomienda GitHub y lo que pide `zizmor`. Para revisar tus flujos con `actionlint` y `zizmor`, copia `verificar-apk/plantilla/revisar-flujos.yml`.
 - Poner `permissions: contents: read` y `timeout-minutes` en el flujo **[F]** (docs.github.com, «Secure use reference»).
 
 ## Paso 5: firmar y publicar

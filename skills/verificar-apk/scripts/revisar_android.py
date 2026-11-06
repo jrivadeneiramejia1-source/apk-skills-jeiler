@@ -21,7 +21,7 @@ from pathlib import Path
 TARGET_SDK_PLAY = 36
 
 ANDROID = "{http://schemas.android.com/apk/res/android}"
-SALTAR = {"node_modules", ".git", "build", ".gradle", ".idea", "__pycache__", ".cxx", "Pods"}
+SALTAR = {"node_modules", ".git", "build", ".gradle", ".idea", "__pycache__", ".cxx", "Pods", "original", "unknown", "kotlin"}
 TEXTO = {".xml", ".gradle", ".kts", ".json", ".properties", ".kt", ".java", ".js", ".ts", ".html", ".yml", ".yaml", ".toml", ".env"}
 MAX_ARCHIVO, MAX_ARCHIVOS = 1_000_000, 6000
 
@@ -50,7 +50,7 @@ IDS_POR_DEFECTO = ("io.ionic.starter", "com.example", "com.ionicframework")
 def listar(raiz):
     salida = []
     for dp, dirs, files in os.walk(raiz):
-        dirs[:] = [d for d in dirs if d not in SALTAR]
+        dirs[:] = [d for d in dirs if d not in SALTAR and not d.startswith("smali")]
         for f in files:
             salida.append(Path(dp) / f)
             if len(salida) >= MAX_ARCHIVOS:
@@ -120,11 +120,13 @@ def revisar(raiz):
     gradles = [p for p in archivos if p.name in ("build.gradle", "build.gradle.kts")]
     caps = [p for p in archivos if p.name.startswith("capacitor.config.") and p.suffix in (".json", ".ts", ".js")]
     flujos = [p for p in archivos if p.suffix in (".yml", ".yaml") and ".github" in p.parts and "workflows" in p.parts]
-    if not (manifests or gradles or caps or flujos):
+    if not (manifests or gradles or caps or flujos or any(p.name == "apktool.yml" for p in archivos)):
         raise ValueError("no encontré un proyecto de Android (ni AndroidManifest.xml, ni build.gradle, ni capacitor.config, ni flujos de Actions)")
 
-    # ---- Manifiesto
+    # ---- Manifiesto (del proyecto, o el ya construido si la carpeta viene de «apktool d»)
     for mf in manifests:
+        if not leer(mf).lstrip().startswith("<"):  # manifiesto binario (AXML): solo se lee el decodificado
+            continue
         try:
             raiz_xml = ET.fromstring(leer(mf))
         except ET.ParseError:
@@ -133,7 +135,7 @@ def revisar(raiz):
         app = raiz_xml.find("application")
         if app is not None:
             if app.get(ANDROID + "debuggable") == "true":
-                add("A01", "ALTA", rel(mf), "android:debuggable=\"true\": nunca se publica así; cualquiera podría depurar la app.")
+                add("A01", "ALTA", rel(mf), "android:debuggable=\"true\": nunca se publica así; cualquiera podría depurar la app. (Los APK «debug» lo traen por diseño: en el APK que publicas debe ser false.)")
             if app.get(ANDROID + "usesCleartextTraffic") == "true":
                 add("A02", "MEDIA", rel(mf), "usesCleartextTraffic=\"true\": permite tráfico http sin cifrar. Usa https.")
             if app.get(ANDROID + "allowBackup") != "false":
@@ -160,6 +162,12 @@ def revisar(raiz):
         sens = sorted(permisos & PERMISOS_SENSIBLES)
         if sens:
             add("A07", "BAJA", rel(mf), "Permisos sensibles (" + ", ".join(sens) + "): pide cada uno solo si la app lo usa, y explícalo en la política de privacidad.")
+
+    # ---- APK ya decodificado con apktool: el nivel de API sale de apktool.yml
+    for y in (p for p in archivos if p.name == "apktool.yml"):
+        m = re.search(r"(?m)^\s*targetSdkVersion:\s*['\"]?(\d+)", leer(y))
+        if m and int(m.group(1)) < TARGET_SDK_PLAY:
+            add("G01", "ALTA", rel(y), f"targetSdk {m.group(1)}: desde el 2026-08-31 Google Play pide {TARGET_SDK_PLAY} o más para apps nuevas y actualizaciones.")
 
     # ---- Gradle
     variables = next((leer(p) for p in archivos if p.name == "variables.gradle"), "")

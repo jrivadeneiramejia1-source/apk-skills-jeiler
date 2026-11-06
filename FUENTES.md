@@ -21,3 +21,5 @@ python -I comparar-fuentes.py
 ```
 Es de solo lectura: compara cada commit de esta tabla con el más nuevo del repo de origen y dice «igual» o «HAY CAMBIOS» (o no pudo consultar). Salida 0 = todo igual, 1 = hay cambios, 2 = no se pudo consultar alguno. Que haya cambios no obliga a actualizar: primero mirar qué cambió, volver a revisar su seguridad (`SEGURIDAD.md`) y actualizar la fila de esta tabla. Probado el 2026-11-04.
 
+## Herramientas externas que se usan pero NO se copian
+Ver `skills/verificar-apk/references/herramientas.md` (Apktool 3.0.3 Apache-2.0, actionlint 1.7.12 MIT, zizmor 1.32.0 MIT, REA 6.5.0 MIT): versión, licencia, huella y qué se midió con cada una.

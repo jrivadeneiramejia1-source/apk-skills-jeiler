@@ -8,6 +8,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
+try:
+    import yaml  # opcional
+except ImportError:
+    yaml = None
+
 RAIZ = Path(__file__).resolve().parent.parent
 SCRIPT = RAIZ / "skills/verificar-apk/scripts/revisar_android.py"
 EJ = RAIZ / "skills/verificar-apk/ejemplos"
@@ -132,6 +137,51 @@ class TestRevisorAndroid(unittest.TestCase):
         self.cambiar(self.wf, "        run: ./gradlew assembleDebug --no-daemon", "        env:\n          TITULO: ${{ github.event.pull_request.title }}\n        run: ./gradlew assembleDebug --no-daemon")
         _, out, _ = correr(self.p, "--json")
         self.assertNotIn("W08", ids(out))
+
+    # ---- APK ya construido y decodificado con apktool
+    def test_apk_decodificado(self):
+        c, out, _ = correr(EJ / "apk-decodificado", "--json")
+        self.assertEqual(c, 1)
+        self.assertTrue({"A01", "A03"} <= ids(out))
+        self.assertNotIn("A00", ids(out), "el manifiesto binario de original/ no debe leerse como XML")
+
+    def test_apk_decodificado_con_target_sdk_bajo(self):
+        dec = self.tmp / "dec"
+        shutil.copytree(EJ / "apk-decodificado", dec)
+        y = dec / "apktool.yml"
+        y.write_text(y.read_text(encoding="utf-8").replace("targetSdkVersion: 36", "targetSdkVersion: 34"), encoding="utf-8")
+        _, out, _ = correr(dec, "--json")
+        self.assertIn("G01", ids(out))
+
+    def test_manifiesto_binario_se_ignora(self):
+        (self.p / "otro").mkdir()
+        (self.p / "otro/AndroidManifest.xml").write_bytes(b"\x03\x00\x08\x00binario")
+        _, out, _ = correr(self.p, "--json")
+        self.assertNotIn("A00", ids(out))
+
+    # ---- Plantilla de revisión de flujos (actionlint y zizmor)
+    def test_plantilla_revisar_flujos_es_segura_y_fijada(self):
+        t = (RAIZ / "skills/verificar-apk/plantilla/revisar-flujos.yml").read_text(encoding="utf-8")
+        for usos in re.findall(r"uses:\s*(\S+)", t):
+            self.assertRegex(usos, r"@[0-9a-f]{40}$", f"acción sin commit fijo: {usos}")
+        self.assertIn("persist-credentials: false", t)
+        self.assertIn("sha256sum -c", t)
+        self.assertIn("--offline", t)
+        self.assertRegex(t, r"(?m)^permissions:\n  contents: read")
+
+    @unittest.skipIf(yaml is None, "PyYAML no está instalado")
+    def test_los_flujos_de_los_ejemplos_son_yaml_valido(self):
+        for f in (RAIZ / "skills/verificar-apk").rglob("*.yml"):
+            try:
+                yaml.safe_load(f.read_text(encoding="utf-8"))
+            except yaml.YAMLError as e:
+                self.fail(f"{f.relative_to(RAIZ)} no es YAML válido: {str(e)[:80]} (GitHub lo rechazaría)")
+
+    def test_la_plantilla_pasa_el_propio_revisor(self):
+        (self.p / ".github/workflows/apk.yml").unlink()
+        shutil.copy(RAIZ / "skills/verificar-apk/plantilla/revisar-flujos.yml", self.p / ".github/workflows/revisar-flujos.yml")
+        c, out, _ = correr(self.p, "--json")
+        self.assertEqual((c, json.loads(out)), (0, []))
 
     def test_errores_de_entrada(self):
         self.assertEqual(correr(self.tmp / "no-existe")[0], 2)

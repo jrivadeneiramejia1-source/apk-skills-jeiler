@@ -22,6 +22,17 @@ python -I skills\verificar-apk\scripts\revisar_android.py CARPETA-DEL-PROYECTO
 Salida 0 = sin hallazgos graves; 1 = hay ALTA; 2 = no encontró un proyecto. Avisa: `debuggable`, `exported` que falta, provider exportado, tráfico http, permisos que Google Play restringe, `targetSdk` menor que el que Play exige (36 desde 2026-08-31), contraseñas de firma escritas, llaves `.jks` sin ignorar, claves escritas, `server.url` de Capacitor, y fallos comunes en los flujos de GitHub Actions (acciones sin versión, `echo` de secretos, inyección por títulos de PR, sin permisos mínimos ni caché de Gradle).
 Arreglar las ALTA antes de gastar minutos de Actions. Cada regla y su fuente: `references/reglas.md`. Ejemplos bueno y malo: `ejemplos/`. **No reemplaza** probar el APK ya construido (pasos siguientes).
 
+## Paso 0b: revisar el APK ya construido (lo que de verdad lleva dentro)
+El manifiesto final del APK puede traer cosas que no están en tu código (permisos o componentes que agregan las librerías). Para verlo sin ejecutar nada:
+1. Decodificar con `apktool` (Apache-2.0; hace falta Java): `apktool d MI-APP.apk -o SALIDA`. Solo APK **tuyos o de código abierto**.
+2. `python -I skills\verificar-apk\scripts\revisar_android.py SALIDA` (lee el manifiesto decodificado y `apktool.yml` para el `targetSdk`; ignora el manifiesto binario de `original/`).
+3. Alternativa pasiva con **REA** (herramienta de ingeniería inversa de tu fork `rea.-`): `rea decode-android-resources MI-APP.apk` entrega el manifiesto y las cadenas sin escribir archivos (necesita `REA_APKTOOL_COMMAND` apuntando a `apktool`).
+4. La web que va dentro está en `SALIDA/assets/public`: compararla con tu carpeta (`diff -rq`) y pasarle `revisar_pwa.py` (en `app-skills-jeiler`).
+Un APK **debug** siempre sale con `debuggable=true` (A01): es normal; en el que publicas debe ser `false`. Medido sobre el APK de la plantilla: ver `PRUEBAS.md`. Herramientas, versiones y revisión de seguridad: `references/herramientas.md`.
+
+## Paso 0c: revisar los flujos de GitHub Actions con dos herramientas abiertas
+Copiar `plantilla/revisar-flujos.yml` a `.github/workflows/`: corre `actionlint` (errores de escritura) y `zizmor` (seguridad: disparadores peligrosos, inyección, permisos de más, acciones sin fijar a un commit). La plantilla pasa las dos sin hallazgos, incluso con `zizmor --persona pedantic`. Para fijar una acción a su commit: `git ls-remote --tags https://github.com/DUEÑO/ACCION`. Complementan a las reglas W del revisor (que sí conocen Gradle, `timeout-minutes` y `echo` de secretos).
+
 ## Proceso
 1. **Identificar el archivo.** APK o AAB, `debug` o `release`, versión, tamaño. Si hay herramientas de Android disponibles (`aapt`, `apksigner`), leer el nombre del paquete, la versión y los permisos declarados; si no, decirlo.
 2. **Instalar y abrir.** Primer arranque sin datos guardados. ¿Abre rápido? ¿Se cierra solo? ¿Pide permisos al abrir o solo cuando los necesita, con un texto claro?
